@@ -10,7 +10,7 @@ def create_revs_file(output_dir="./"):
 
     output_txt_file = os.path.join(output_dir, "reviewers_ids.txt")
     with open(output_txt_file, "w") as output:
-        output.write("dani3wm\r\n")
+        output.write("dani4wm\r\n")
 
     return 0
 
