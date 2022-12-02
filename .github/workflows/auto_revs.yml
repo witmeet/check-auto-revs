@@ -29,7 +29,7 @@ jobs:
         with:
           script: |
             const getNewBody = require('./.github/scripts/edit_pr.js');
-            const new_body = getNewBody(github, context);
+            const new_body = getNewBody({github, context});
             console.log("new_body:", new_body);
             console.log("context.issue.number:", context.issue.number);
             console.log("context.issue.body:", context.issue.body);
