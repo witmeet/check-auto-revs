@@ -43,7 +43,7 @@ async function readContentFromFile(file_path) {
 }
 
 
-async function getNewBody({github, context}) {
+async function getNewBody(github, context) {
   const rev_ids = await readContentFromFile(file_path);
   console.log(`rev_ids:`, rev_ids);
   console.log("------------------");
@@ -54,6 +54,6 @@ async function getNewBody({github, context}) {
   console.dir(context);
 }
 
-module.exports = () => {
-  return getNewBody();
+module.exports = ({github, context}) => {
+  return getNewBody(github, context);
 }
