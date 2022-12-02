@@ -30,7 +30,7 @@ async function readContentFromFile(file_path) {
 
   try {
     await access(file_path, fs.F_OK);
-    result = await readFile(file_path);
+    result = await readFile(file_path, 'utf-8');
     if (result.length == 0) {
       return "";
     }
@@ -43,8 +43,10 @@ async function readContentFromFile(file_path) {
 }
 
 
-async function getNewBody(github, context) {
+async function update_pr_with_reviewers(github, context) {
   const rev_ids = await readContentFromFile(file_path);
+  const rev_id_list = rev_ids.split("\n");
+
   console.log("pull_request number:", context.payload.number);
   console.log("pull_request body:", context.payload.pull_request.body);
   console.log(`rev_ids:`, rev_ids);
@@ -54,8 +56,27 @@ async function getNewBody(github, context) {
   console.log("------------------");
   console.log("context:");
   console.dir(context);
+
+  rev_id_list.forEach(item => {
+    const gh_id = item.trim();
+    console.log(`I need to add ${gh_id} as a reviewer`);
+  });
+
+  const new_body = (
+    context.payload.pull_request.body +
+    `\n\n### Automatic reviewers
+
+${rev_id_list.map(item => `@${item}`).join(", ")}
+`);
+
+  github.rest.pulls.update({
+    owner: context.repo.owner,
+    repo:  context.repo.repo,
+    pull_number: context.payload.number,
+    body: new_body
+  })
 }
 
 module.exports = ({github, context}) => {
-  return getNewBody(github, context);
+  return update_pr_with_reviewers(github, context);
 }
