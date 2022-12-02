@@ -47,6 +47,7 @@ async function update_pr_with_reviewers(github, context, title) {
   const rev_ids = await readContentFromFile(file_path);
   const rev_id_list =
     rev_ids
+    .split("\n")
     .map(i => i.replace(/(\r\n|\n|\r)/gm, ""))
     .filter(i => i.trim().length);
 
