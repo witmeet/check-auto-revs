@@ -60,9 +60,9 @@ async function update_pr_with_reviewers(github, context, title) {
   // console.log("------------------");
   // console.log("github:");
   // console.dir(github);
-  console.log("------------------");
-  console.log("context:");
-  console.dir(context);
+  // console.log("------------------");
+  // console.log("context:");
+  // console.dir(context);
 
   let body = context.payload.pull_request.body;
   const auto_revs_pos = body.indexOf(title);
