@@ -15,17 +15,39 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
+      - name: Python setup
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.10'
+
+      - name: Create fake list of PR reviewers
+        run: |
+          python create_rev_list.py -o build/output
+
       - name: Update PR description
         uses: actions/github-script@v5
         with:
           script: |
-            console.log(`Hola`);
-            const response = await github.request(`/repos/{owner}/{repo}/pulls/{pull_number}`, {
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              pull_number: context.issue.number
-            });
-            console.log("Response status: ", response.status);
-            console.log("Response body: ", response.body);
-            console.log("Full response:");
-            console.dir(response);
+            const getNewBody = require('./.github/scripts/edit_pr.js');
+            const new_body = getNewBody(github, context);
+            console.log("new_body:", new_body);
+            console.log("context.issue.number:", context.issue.number);
+            console.log("context.issue.body:", context.issue.body);
+
+            # const edit_pr_body = require('./.github/scripts/edit_pr_body.js');
+            # const res1 = await github.request(`/repos/{owner}/{repo}/pulls/{pull_number}`, {
+            #   owner: context.repo.owner,
+            #   repo: context.repo.repo,
+            #   pull_number: context.issue.number
+            # });
+            # console.log("Response status: ", res1.status);
+            # console.log("PR body: ", res1.data.body);
+
+            # const new_body = await edit_pr_body(res1.data.body);
+
+            # const res2 = await.github.request(`PATCH /repos/{owner}/{repo}/pulls/{pull_number}`, {
+            #   owner: context.repo.owner,
+            #   repo: context.repo.repo,
+            #   pull_number: context.issue.number,
+            #   body: new_body
+            # });
