@@ -45,7 +45,11 @@ async function readContentFromFile(file_path) {
 
 async function update_pr_with_reviewers(github, context, title) {
   const rev_ids = await readContentFromFile(file_path);
-  const rev_id_list = rev_ids.split("\n").filter(item => item.trim().length);
+  const rev_id_list =
+    rev_ids
+    .map(i => i.replace(/(\r\n|\n|\r)/gm, ""))
+    .filter(i => i.trim().length);
+
   const rev_id_str = rev_id_list.map(item => `@${item}`).join(", ");
 
   console.log(`rev_id_list: `, rev_id_list);
