@@ -84,6 +84,6 @@ async function update_pr_with_reviewers(github, context, title) {
   });
 }
 
-module.exports = ({github, context}) => {
-  return update_pr_with_reviewers(github, context);
+module.exports = ({github, context, title}) => {
+  return update_pr_with_reviewers(github, context, title);
 }
