@@ -43,10 +43,12 @@ async function readContentFromFile(file_path) {
 }
 
 
-async function update_pr_with_reviewers(github, context) {
+async function update_pr_with_reviewers(github, context, title) {
   const rev_ids = await readContentFromFile(file_path);
-  const rev_id_list = rev_ids.split("\n");
+  const rev_id_list = rev_ids.split("\n").filter(item => item.trim().length);
+  const rev_id_str = rev_id_list.map(item => `@${item}`).join(", ");
 
+  console.log(`rev_id_list: `, rev_id_list);
   console.log("pull_request number:", context.payload.number);
   console.log("pull_request body:", context.payload.pull_request.body);
   console.log(`rev_ids:`, rev_ids);
@@ -57,24 +59,29 @@ async function update_pr_with_reviewers(github, context) {
   console.log("context:");
   console.dir(context);
 
-  rev_id_list.forEach(item => {
-    const gh_id = item.trim();
-    console.log(`I need to add ${gh_id} as a reviewer`);
-  });
+  let body = context.payload.pull_request.body;
+  const auto_revs_pos = body.indexOf(title);
+  if (auto_revs_pos > -1) {
+    body = body.substring(0, auto_revs_pos);
+  }
+  const new_body = body + `\n\n${title}\n\n${rev_id_str}`;
+  // console.log(new_body);
 
-  const new_body = (
-    context.payload.pull_request.body +
-    `\n\n### Automatic reviewers
-
-${rev_id_list.map(item => `@${item}`).join(", ")}
-`);
-
+  // Update the body of the PR.
   github.rest.pulls.update({
     owner: context.repo.owner,
     repo:  context.repo.repo,
     pull_number: context.payload.number,
     body: new_body
-  })
+  });
+
+  // Add the reviewers to the PR.
+  github.rest.pulls.requestReviewers({
+    owner: context.repo.owner,
+    repo:  context.repo.repo,
+    pull_number: context.payload.number,
+    reviewers: rev_id_list
+  });
 }
 
 module.exports = ({github, context}) => {
