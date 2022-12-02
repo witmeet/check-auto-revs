@@ -45,10 +45,12 @@ async function readContentFromFile(file_path) {
 
 async function getNewBody(github, context) {
   const rev_ids = await readContentFromFile(file_path);
+  console.log("pull_request number:", context.payload.number);
+  console.log("pull_request body:", context.payload.pull_request.body);
   console.log(`rev_ids:`, rev_ids);
-  console.log("------------------");
-  console.log("github:");
-  console.dir(github);
+  // console.log("------------------");
+  // console.log("github:");
+  // console.dir(github);
   console.log("------------------");
   console.log("context:");
   console.dir(context);
