@@ -53,10 +53,12 @@ async function update_pr_with_reviewers(github, context, title) {
   let new_body = body + `\n\n${title}\n\n${rev_id_str}`;
 
   // Clean up multiple blank lines.
+  console.log("New body:", new_body);
   const EOL = new_body.match(/\r\n/gm) ? "\r\n" : "\n";
+  console.log("EOL:", EOL);
   const regExp = new RegExp("(" + EOL + "){3,}", "gm");
   new_body = new_body.replace(regExp, EOL+EOL);
-  console.log(new_body);
+  console.log("New body after replace:", new_body);
 
   // Update the body of the PR.
   github.rest.pulls.update({
