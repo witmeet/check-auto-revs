@@ -1,22 +1,3 @@
-
-// const edit_pr_body = require('./.github/scripts/edit_pr_body.js');
-// const res1 = await github.request(`/repos/{owner}/{repo}/pulls/{pull_number}`, {
-//   owner: context.repo.owner,
-//   repo: context.repo.repo,
-//   pull_number: context.issue.number
-// });
-// console.log("Response status: ", res1.status);
-// console.log("PR body: ", res1.data.body);
-// const new_body = await edit_pr_body(res1.data.body);
-
-// const res2 = await.github.request(`PATCH /repos/{owner}/{repo}/pulls/{pull_number}`, {
-//   owner: context.repo.owner,
-//   repo: context.repo.repo,
-//   pull_number: context.issue.number,
-//   body: new_body
-// });
-
-
 const fs = require('fs');
 
 const { access, readFile } = fs.promises;
