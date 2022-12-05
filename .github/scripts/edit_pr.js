@@ -26,18 +26,25 @@ async function readContentFromFile(file_path) {
 
 async function update_pr_with_reviewers(github, context, title) {
   const rev_ids = await readContentFromFile(file_path);
+  console.log(`rev_ids:`, rev_ids);
+
   const rev_id_list =
     rev_ids
     .split("\n")
     .map(i => i.replace(/(\r\n|\n|\r)/gm, ""))
     .filter(i => i.trim().length);
 
-  const rev_id_str = rev_id_list.map(item => `@${item}`).join(", ");
-
+  let rev_id_str = "";
+  if (rev_id_list.length === 0) {
+    rev_id_str = "No automatic reviewers added."
+  } else {
+    rev_id_list.map(item => `@${item}`).join(", ");
+  }
   console.log(`rev_id_list: `, rev_id_list);
+  console.log(`rev_id_str: `, rev_id_str);
+
   console.log("pull_request number:", context.payload.number);
   console.log("pull_request body:", context.payload.pull_request.body);
-  console.log(`rev_ids:`, rev_ids);
   // console.log("------------------");
   // console.log("github:");
   // console.dir(github);
