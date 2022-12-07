@@ -1,0 +1,32 @@
+name: auto-revs
+
+on:
+  workflow_dispatch:
+  pull_request:
+    branches: [main]
+
+jobs:
+  ci:
+    runs-on: ubuntu-latest
+
+    env:
+      GITHUB_TOKEN: ${{ github.token }}
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Python setup
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.10'
+
+      - name: Create fake list of PR reviewers
+        run: |
+          python create_rev_list.py -o build/output
+
+      - name: Update PR description
+        uses: actions/github-script@v5
+        with:
+          script: |
+            const fn = require('./.github/scripts/edit_pr.js');
+            await fn({github, context, title: "### Automatic reviewers"});
