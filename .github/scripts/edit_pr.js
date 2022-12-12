@@ -61,6 +61,8 @@ async function update_pr_with_reviewers(github, context, title) {
       body = body.substring(0, auto_revs_pos);
     }
     new_body = body + `\n${title}\n\n${rev_id_str}`;
+  } else {
+    new_body = `${title}\n\n${rev_id_str}`;
   }
 
   // Clean up multiple blank lines.
@@ -72,14 +74,12 @@ async function update_pr_with_reviewers(github, context, title) {
   // console.log("New body after replace:", new_body);
 
   // Update the body of the PR.
-  if (body !== null && new_boby.length() > 0) {
-    github.rest.pulls.update({
-      owner: context.repo.owner,
-      repo:  context.repo.repo,
-      pull_number: context.payload.number,
-      body: new_body
-    });
-  }
+  github.rest.pulls.update({
+    owner: context.repo.owner,
+    repo:  context.repo.repo,
+    pull_number: context.payload.number,
+    body: new_body
+  });
 
   // Add the reviewers to the PR.
   github.rest.pulls.requestReviewers({
