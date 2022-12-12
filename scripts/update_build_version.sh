@@ -15,8 +15,6 @@ VERSION_CHANGELOG=$(scripts/get_local_version.sh)
 
 if [[ "$VERSION_SETUP" != "\"$VERSION_CHANGELOG\"" ]]; then
   echo "Build version $VERSION_SETUP is not consistant with the changelog, update the build version to \"$VERSION_CHANGELOG\""
-  git tag -a ${VERSION_CHANGELOG} -m "tag ${VERSION_CHANGELOG}"
-  git push --tags
   sed -i -r "s/version=\".*\",/version=\"$VERSION_CHANGELOG\",/" $SETUP_PY_PATH
 else
   echo "Build version $VERSION_SETUP is consistant with the changelog."

@@ -34,5 +34,11 @@ jobs:
           git config --global user.name "$(git --no-pager log --format=format:'%an' -n 1)"
           git config --global user.email "$(git --no-pager log --format=format:'%ae' -n 1)"
 
-      - name: Update version and tag release
+      - name: Tag repository
+        run: |
+          VERSION_CHANGELOG=$(scripts/get_local_version.sh)
+          git tag -a ${VERSION_CHANGELOG} -m "tag ${VERSION_CHANGELOG}"
+          git push --tags
+
+      - name: Update version
         run: scripts/update_build_version.sh

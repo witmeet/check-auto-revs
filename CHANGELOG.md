@@ -12,6 +12,14 @@ Tralari tralara.
 
 * This is something unreleased yet that has been changed.
 
+## [1.0.1] - 2022-12-12
+
+### Added
+
+* This is a feature added to version 1.0.1.
+* This is another feature added to version 1.0.1 too.
+
+
 ## [1.0.0] - 2022-12-12
 
 ### Added
