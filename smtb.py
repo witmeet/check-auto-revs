@@ -17,8 +17,8 @@ def print_reviewers(pr):
 
 def add_reviewers(pr, reviewers_id_list):
     # Delete a reviewer.
-    # pr.delete_review_request(reviewers=["dani4wm",])
-    pr.create_review_request(reviewers=reviewers_id_list)
+    pr.delete_review_request(reviewers=["dani4wm",])
+    # pr.create_review_request(reviewers=reviewers_id_list)
 
 
 def update_body(pr, reviewers_report, title_hook):
@@ -44,17 +44,17 @@ def run(reviewers_report_path, reviewers_ids_path, delete_prefix, title_hook):
     g = Github(GHT)
 
     repo = g.get_repo("witmeet/check-auto-revs")
-    pr = repo.get_pull(1)
-    update_body(reviewers_report, title_hook)
+    pr = repo.get_pull(2)
+    update_body(pr, reviewers_report, title_hook)
     add_reviewers(pr, rev_id_list)
 
 
 if __name__ == "__main__":
     sys.exit(
         run(
-            "build/output/reviewers_report.md"  # reviewers_ids_path
-            "build/output/reviewers_ids.txt"    # reviewers_report_path
-            "PERS_"                             # delete_prefix
-            "### Automatic reviewers"           # title_hook
+            "build/output/reviewers_report.md",  # reviewers_ids_path
+            "build/output/reviewers_ids.txt",    # reviewers_report_path
+            "PERS_",                             # delete_prefix
+            "### Automatic reviewers",           # title_hook
         )
     )
