@@ -23,11 +23,16 @@ jobs:
         uses: actions/setup-python@v2
         with:
             python-version: "3.x"
-      - name: Install dependencies
 
+      - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
           pip install build wheel
+
+      - name: Setup git user
+        run: |
+          git config --global user.name "$(git --no-pager log --format=format:'%an' -n 1)"
+          git config --global user.email "$(git --no-pager log --format=format:'%ae' -n 1)"
 
       - name: Update version and tag release
         run: scripts/update_build_version.sh
