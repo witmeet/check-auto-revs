@@ -3,20 +3,20 @@ const fs = require('fs');
 const { access, readFile } = fs.promises;
 
 
-const file_path = "./build/output/reviewers_ids.txt";
+const reviewers_ids_path = "./build/output/reviewers_ids.txt";
+const reviewers_report_path = "./build/output/reviewers_report.md";
 
-
-async function readContentFromFile(file_path) {
+async function readContentFromFile(reviewers_ids_path) {
   let result = "";
 
   try {
-    await access(file_path, fs.F_OK);
-    result = await readFile(file_path, 'utf-8');
+    await access(reviewers_ids_path, fs.F_OK);
+    result = await readFile(reviewers_ids_path, 'utf-8');
     if (result.length == 0) {
       return "";
     }
   } catch (err) {
-    console.error(`Could not read the file ${file_path}.`, err);
+    console.error(`Could not read the file ${reviewers_ids_path}.`, err);
     return "";
   }
 
@@ -25,7 +25,9 @@ async function readContentFromFile(file_path) {
 
 
 async function update_pr_with_reviewers(github, context, title) {
-  const rev_ids = await readContentFromFile(file_path);
+  const rev_ids = await readContentFromFile(reviewers_ids_path);
+  const rev_report = await readContentFromFile(reviewers_report_path);
+
   console.log(`rev_ids:`, rev_ids);
 
   const rev_id_list =
@@ -34,14 +36,16 @@ async function update_pr_with_reviewers(github, context, title) {
     .map(i => i.replace(/(\r\n|\n|\r)/gm, ""))
     .filter(i => i.trim().length);
 
-  let rev_id_str = "";
-  if (rev_id_list.length === 0) {
-    rev_id_str = "No automatic reviewers added."
-  } else {
-    rev_id_list.map(item => `@${item}`).join(", ");
+  let body = context.payload.pull_request.body;
+  const auto_revs_pos = body.indexOf(title);
+  if (auto_revs_pos > -1) {
+    body = body.substring(0, auto_revs_pos);
   }
-  console.log(`rev_id_list: `, rev_id_list);
-  console.log(`rev_id_str: `, rev_id_str);
+
+  // If the reviewers_report.md has content, append it to PR's body.
+  if (rev_report.length > 0) {
+    body = body + `\n${rev_report}`;
+  }
 
   console.log("pull_request number:", context.payload.number);
   console.log("pull_request body:", context.payload.pull_request.body);
@@ -51,27 +55,6 @@ async function update_pr_with_reviewers(github, context, title) {
   // console.log("------------------");
   // console.log("context:");
   // console.dir(context);
-
-  let body = context.payload.pull_request.body;
-  let new_body = "";
-
-  if (body !== null) {
-    const auto_revs_pos = body.indexOf(title);
-    if (auto_revs_pos > -1) {
-      body = body.substring(0, auto_revs_pos);
-    }
-    new_body = body + `\n${title}\n\n${rev_id_str}`;
-  } else {
-    new_body = `${title}\n\n${rev_id_str}`;
-  }
-
-  // Clean up multiple blank lines.
-  // console.log("New body:", new_body);
-  // const EOL = new_body.match(/\r\n/gm) ? "\r\n" : "\n";
-  // console.log("EOL:", EOL);
-  // const regExp = new RegExp("(" + EOL + "){3,}", "gm");
-  // new_body = new_body.replace(regExp, EOL+EOL);
-  // console.log("New body after replace:", new_body);
 
   // Update the body of the PR.
   github.rest.pulls.update({
