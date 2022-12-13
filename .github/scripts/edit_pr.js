@@ -1,4 +1,5 @@
 const fs = require('fs');
+const { Octokit } = require("@octokit/rest");
 
 const { access, readFile } = fs.promises;
 
@@ -24,11 +25,20 @@ async function readContentFromFile(reviewers_ids_path) {
 }
 
 
-async function update_pr_with_reviewers(github, context, title) {
+async function update_pr_with_reviewers(token, github, context, title) {
   const rev_ids = await readContentFromFile(reviewers_ids_path);
   const rev_report = await readContentFromFile(reviewers_report_path);
 
+  console.log("token:", token);
   console.log(`rev_ids:`, rev_ids);
+
+  const octokit = new Octokit({ auth: token });
+
+  const pr = await octokit.request('GET /repos/{owner}/{repo}/pulls/{pull_number}', {
+    owner: 'Witmeet',
+    repo: 'check-auto-revs',
+    pull_number: context.payload.number
+  });
 
   const rev_id_list =
     rev_ids
@@ -36,7 +46,8 @@ async function update_pr_with_reviewers(github, context, title) {
     .map(i => i.replace(/(\r\n|\n|\r)/gm, ""))
     .filter(i => i.trim().length);
 
-  let body = context.payload.pull_request.body;
+  let body = pr.body;
+  console.log("Current body:", body);
   const auto_revs_pos = body.indexOf(title);
   if (auto_revs_pos > -1) {
     body = body.substring(0, auto_revs_pos);
@@ -73,6 +84,6 @@ async function update_pr_with_reviewers(github, context, title) {
   });
 }
 
-module.exports = ({github, context, title}) => {
-  return update_pr_with_reviewers(github, context, title);
+module.exports = ({token, github, context, title}) => {
+  return update_pr_with_reviewers(token, github, context, title);
 }
