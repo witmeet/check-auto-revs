@@ -32,4 +32,4 @@ jobs:
         with:
           script: |
             const fn = require('./.github/scripts/edit_pr.js');
-            await fn({process.env.GITHUB_TOKEN, github, context, title: "### Automatic reviewers"});
+            await fn({token: process.env.GITHUB_TOKEN, github, context, title: "### Automatic reviewers"});
