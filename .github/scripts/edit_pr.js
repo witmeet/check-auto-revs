@@ -61,7 +61,7 @@ async function update_pr_with_reviewers(github, context, title) {
     owner: context.repo.owner,
     repo:  context.repo.repo,
     pull_number: context.payload.number,
-    body: new_body
+    body: body
   });
 
   // Add the reviewers to the PR.
