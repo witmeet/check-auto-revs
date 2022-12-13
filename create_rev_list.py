@@ -23,6 +23,7 @@ def create_revs_file(output_dir="./"):
         output.write(
             " * Daniela Rus Morales (dani4wm) because of changes in "
             "blah blah blah...\n"
+            " * Fulanita de Tal (unknown) because of change in ...\n"
         )
     return 0
 
