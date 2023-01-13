@@ -24,9 +24,18 @@ jobs:
         run: |
           python create_rev_list.py -o build/output
 
+      - name: Install workflow dependencies
+        run: npm install @octokit/rest
+
       - name: Update PR description
         uses: actions/github-script@v5
         with:
           script: |
-            const fn = require('./.github/scripts/edit_pr.js');
-            await fn({github, context, title: "### Automatic reviewers"});
+            const { Octokit } = require("@octokit/rest");
+            const { automatic_pr_update } = require('./.github/scripts/edit_pr.js');
+
+            const octokit = new Octokit({ auth: process.env.GITHUB_TOKEN });
+            const pr_number = context.payload.number;
+            const title = "### Automatic reviewers";
+
+            await automatic_pr_update(octokit, github, context, title);

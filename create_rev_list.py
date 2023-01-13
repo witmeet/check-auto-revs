@@ -10,9 +10,22 @@ def create_revs_file(output_dir="./"):
 
     output_txt_file = os.path.join(output_dir, "reviewers_ids.txt")
     with open(output_txt_file, "w") as output:
-        # output.write("dani4wm\r\n")
-        output.write("")
+        output.write("danirus\r\n")
+        output.write("dani4wm\r\n")
+        # output.write("")
 
+    output_txt_file = os.path.join(output_dir, "reviewers_report.md")
+    with open(output_txt_file, "w") as output:
+        output.write("### Automatic reviewers\n\n")
+        output.write(
+            "The following group of people has been added automatically "
+            "as reviewers to this PR:\n\n"
+        )
+        output.write(
+            " * Daniela Rus Morales (dani4wm) because of changes in "
+            "blah blah blah...\n"
+            " * Fulanita de Tal (unknown) because of change in ...\n"
+        )
     return 0
 
 
