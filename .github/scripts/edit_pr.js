@@ -86,7 +86,7 @@ async function automatic_pr_update(octokit, github, context, title) {
   let dismiss_approved_reviews = false;
   const branch_protection = await get_branch_protection(octokit, "main");
 
-  if (branch_protection?.required_pull_request_reviews) {
+  if (branch_protection && branch_protection.required_pull_request_reviews) {
     const { required_pull_request_reviews } = branch_protection;
     const { dismiss_stale_reviews } = required_pull_request_reviews;
     dismiss_approved_reviews = dismiss_stale_reviews;
