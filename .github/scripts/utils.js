@@ -18,7 +18,9 @@ async function get_branch_protection(octokit, branch) {
         return response.data;
 
     } catch(error) {
-        return error.response?.data ? error.response.data : null;
+        return (error.response && error.response.data)
+            ? error.response.data
+            : null;
     }
 }
 
