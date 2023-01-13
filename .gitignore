@@ -1,3 +1,7 @@
 .eggs/
 .venv/
 build/output/
+.envrc
+node_modules/
+package-lock.json
+venv
